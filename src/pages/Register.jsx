@@ -40,7 +40,7 @@ function Register(props) {
             }
             if(data.status === true) {
                 localStorage.setItem('chat-app-user', JSON.stringify(data.user))
-                navigate("/")
+                navigate("/setAvatar")
             }
         }
     }
@@ -171,6 +171,7 @@ const FormContainer = styled.div`
             border-radius: 0.4rem;
             font-size: 1rem;
             &:hover {
+                color: black;
                 background-color: rgb(237, 112, 107);
                 transition: 0.5s ease-in-out;
             }
