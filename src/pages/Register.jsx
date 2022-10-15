@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import Logo from '../assets/logo.png'
@@ -29,7 +29,7 @@ function Register(props) {
     const handleSubmit = async (event) => {
         event.preventDefault()
         if(handleValidation()) {
-            const {username, email, password, confirmPassword} = values
+            const {username, email, password} = values
             const {data} = await axios.post(registerRoute, {
                 username,
                 email,
@@ -131,7 +131,7 @@ const FormContainer = styled.div`
     justify-content: center;
     gap: 1rem;
     align-items: center;
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(38, 38, 38);
     .brand {
         display: flex;
         align-items: center;
