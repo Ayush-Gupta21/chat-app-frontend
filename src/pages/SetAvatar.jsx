@@ -18,6 +18,27 @@ function SetAvatar(props) {
     const [isLoading, setIsLoading] = useState(true)
     const [selectedAvatar, setSelectedAvatar] = useState(undefined)
 
+    useEffect(() => {
+        if(!localStorage.getItem('chat-app-user')) {
+            navigate('/login')
+        }
+    }, [])
+
+    useEffect(() => {
+        const data = []
+        async function fetchMyAPI() {
+            for(let i = 0; i < 4; i++) {
+                const image = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`)
+                console.log(image)
+                const buffer = new Buffer(image.data)
+                data.push(buffer.toString("base64"))
+            }
+            setAvatars(data)
+            setIsLoading(false)
+        }
+        fetchMyAPI()
+    }, []);
+
     const toastOptions = {
         position: "bottom-right",
         autoClose: 5000, 
@@ -49,27 +70,6 @@ function SetAvatar(props) {
             return false
         }
     }
-
-    useEffect(() => {
-        if(localStorage.getItem('chat-app-user')) {
-            navigate('/login')
-        }
-    }, [])
-
-    useEffect(() => {
-        const data = []
-        async function fetchMyAPI() {
-            for(let i = 0; i < 4; i++) {
-                const image = await axios.get(`${api}/${Math.round(Math.random() * 1000)}`)
-                console.log(image)
-                const buffer = new Buffer(image.data)
-                data.push(buffer.toString("base64"))
-            }
-            setAvatars(data)
-            setIsLoading(false)
-        }
-        fetchMyAPI()
-    }, []);
 
     return (
         <>
@@ -142,7 +142,6 @@ const Container = styled.div`
         }
         .selected {
             border: 0.4rem solid rgb(114, 212, 183);
-             
         }
     }
     button {
@@ -160,6 +159,6 @@ const Container = styled.div`
             transition: 0.5s ease-in-out;
         }
     }
-`;
+`
 
-export default SetAvatar;
+export default SetAvatar
