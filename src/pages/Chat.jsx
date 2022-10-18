@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { allUsersRoute } from '../utils/APIRoutes';
+import { allUsersRoute, host } from '../utils/APIRoutes';
 import { useNavigate } from 'react-router-dom';
+import io from 'socket.io-client'
 import Contacts from '../components/Contacts';
 import Welcome from '../components/Welcome';
 import ChatContainer from '../components/ChatContainer';
 
 function Chat(props) {
+
+    const socket = useRef()
 
     const [contacts, setContacts] = useState([])
     const [currentUser, setCurrentUser] = useState(undefined)
@@ -27,6 +30,13 @@ function Chat(props) {
         }
         myFunc()
     }, [])
+
+    useEffect(() => {
+        if(currentUser) {
+            socket.current = io(host)
+            socket.current.emit("add-user", currentUser._id)
+        }
+    })
 
     useEffect(() => {
         async function myFetchApi () {
@@ -56,7 +66,11 @@ function Chat(props) {
             {
                 isLoaded && currentChat === undefined ?  
                 <Welcome currentUser={currentUser} /> :
-                <ChatContainer currentChat={currentChat} currentUser={currentUser} />
+                <ChatContainer 
+                    currentChat={currentChat} 
+                    currentUser={currentUser}
+                    socket={socket} 
+                />
             }
         </div> 
     </Container>
