@@ -2,13 +2,25 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {BiPowerOff} from 'react-icons/bi'
 import styled from 'styled-components';
+import axios from 'axios';
+import { logoutRoute } from '../utils/APIRoutes';
+import { toast } from 'react-toastify';
 
 function Logout(props) {
 
     const navigate = useNavigate()
 
+    const toastOptions = {
+        position: "bottom-right",
+        autoClose: 5000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark" 
+    }
+
     const handleClick = async() => {
-        localStorage.clear()
+        const res = await axios.get(logoutRoute, {withCredentials: true})
+        toast.success(res.data.message, toastOptions)
         navigate('/login')
     }
 

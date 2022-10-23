@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import Logo from '../assets/logo.png'
-import {ToastContainer, toast} from 'react-toastify'
+import {toast} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 import axios from 'axios'
 import { registerRoute } from '../utils/APIRoutes'
@@ -29,18 +29,22 @@ function Register(props) {
     const handleSubmit = async (event) => {
         event.preventDefault()
         if(handleValidation()) {
-            const {username, email, password} = values
-            const {data} = await axios.post(registerRoute, {
-                username,
-                email,
-                password
-            })
-            if(data.status === false) {
-                toast.error(data.msg, toastOptions) 
-            }
-            if(data.status === true) {
-                localStorage.setItem('chat-app-user', JSON.stringify(data.user))
-                navigate("/setAvatar")
+            try {
+                const {username, email, password} = values
+                const {data} = await axios.post(registerRoute, {
+                    username,
+                    email,
+                    password
+                }, {withCredentials: true})
+                if(data.status === false) {
+                    toast.error(data.message, toastOptions) 
+                }
+                if(data.status === true) {
+                    toast.success(data.message, toastOptions)
+                    navigate("/setAvatar")
+                }
+            } catch (err) {
+                navigate("/login")
             }
         }
     }
@@ -117,7 +121,6 @@ function Register(props) {
                     </span>
                 </form>
             </FormContainer>
-            <ToastContainer />
         </>
     );
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { allUsersRoute, host } from '../utils/APIRoutes';
+import { allUsersRoute, currentUserRoute, host } from '../utils/APIRoutes';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client'
 import Contacts from '../components/Contacts';
@@ -20,15 +20,12 @@ function Chat(props) {
     const navigate = useNavigate()
 
     useEffect(() => {
-        async function myFunc () {
-            if(!localStorage.getItem('chat-app-user')) {
-                navigate('/login')
-            } else {
-                setCurrentUser(await JSON.parse(localStorage.getItem("chat-app-user")))
-                setIsLoaded(true)
-            }
-        }
-        myFunc()
+        (async () => {
+            const response = await axios.get(currentUserRoute, {withCredentials: true})
+            setCurrentUser(response.data)
+            setIsLoaded(true)
+        })()
+        .catch(err => navigate("/login"))
     }, [])
 
     useEffect(() => {
@@ -42,7 +39,7 @@ function Chat(props) {
         async function myFetchApi () {
             if(currentUser) {
                 if(currentUser.isAvatarImageSet) {
-                    const users = await axios.get(`${allUsersRoute}/${currentUser._id}`)
+                    const users = await axios.get(`${allUsersRoute}/${currentUser._id}`, {withCredentials: true})
                     setContacts(users.data)
                 } else {
                     navigate('/setAvatar')

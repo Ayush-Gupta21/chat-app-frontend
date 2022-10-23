@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import {ToastContainer, toast} from 'react-toastify'
+import {toast} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 import axios from 'axios'
 import { Buffer } from 'buffer'
 import { ClipLoader } from 'react-spinners'
-import { setAvatarRoute } from '../utils/APIRoutes'
+import { currentUserRoute, setAvatarRoute } from '../utils/APIRoutes'
 
 function SetAvatar(props) {
 
@@ -19,9 +19,14 @@ function SetAvatar(props) {
     const [selectedAvatar, setSelectedAvatar] = useState(undefined)
 
     useEffect(() => {
-        if(!localStorage.getItem('chat-app-user')) {
-            navigate('/login')
+        async function myFunc() {
+            try {
+                await axios.get(currentUserRoute, {withCredentials: true})
+            } catch (err) {
+                navigate("/login")
+            } 
         }
+        myFunc()
     }, [])
 
     useEffect(() => {
@@ -56,18 +61,19 @@ function SetAvatar(props) {
             toast.error("Please select an Avatar!", toastOptions)
             return false
         }
-        const user = await JSON.parse(localStorage.getItem("chat-app-user"))
-        const {data} = await axios.post(`${setAvatarRoute}/${user._id}`, {
-            image: avatars[selectedAvatar] 
-        })
-        if(data.isSet) {
-            user.isAvatarImageSet = true
-            user.avatarImage = avatars[selectedAvatar]
-            localStorage.setItem("chat-app-user", JSON.stringify(user))
-            navigate('/')
-        } else {
-            toast.error("Error setting Avatar. Please try again!", toastOptions)
-            return false
+        try {
+            const {data} = await axios.post(setAvatarRoute, {
+                image: avatars[selectedAvatar]
+            }, {withCredentials: true})
+            if(data.isSet) {
+                toast.success(data.msg, toastOptions)
+                navigate('/')
+            } else {
+                toast.error("Error setting Avatar. Please try again!", toastOptions)
+                return false
+            }
+        } catch (err) {
+            navigate("/login")
         }
     }
 
@@ -106,7 +112,6 @@ function SetAvatar(props) {
                     Set as Profile Picture
                 </button> 
             </Container>
-            <ToastContainer />
         </>
     );
 }

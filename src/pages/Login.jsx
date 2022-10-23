@@ -2,19 +2,19 @@ import React, {useState, useEffect} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import Logo from '../assets/logo.png'
-import {ToastContainer, toast} from 'react-toastify'
+import {toast} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 import axios from 'axios'
-import { loginRoute } from '../utils/APIRoutes'
+import { currentUserRoute, loginRoute } from '../utils/APIRoutes'
 
 function Login(props) {
-
-    const navigate = useNavigate()
 
     const [values, setValues] = useState({
         username: "",
         password: "",
     });
+
+    const navigate = useNavigate()
 
     const toastOptions = {
         position: "bottom-right",
@@ -25,25 +25,34 @@ function Login(props) {
     }
 
     useEffect(() => {
-        if(localStorage.getItem('chat-app-user')) {
-            navigate('/')
-        }
+        (
+            async () => {
+                const res = await axios.get(currentUserRoute, {withCredentials: true})
+                if(res.status === 200) {
+                    navigate("/")
+                }
+            }
+        )()
     }, [])
 
     const handleSubmit = async (event) => {
         event.preventDefault()
         if(handleValidation()) {
             const {username, password} = values
-            const {data} = await axios.post(loginRoute, {
-                username,
-                password
-            })
-            if(data.status === false) {
-                toast.error(data.msg, toastOptions) 
-            }
-            if(data.status === true) {
-                localStorage.setItem('chat-app-user', JSON.stringify(data.user))
-                navigate("/")
+            try {
+                const {data} = await axios.post(loginRoute, {
+                    username,
+                    password
+                }, {withCredentials: true})
+                if(data.status === false) {
+                    toast.error(data.message, toastOptions) 
+                }
+                if(data.status === true) {
+                    toast.success(data.message, toastOptions)
+                    navigate("/")
+                }
+            } catch (err) {
+                navigate("/login")
             }
         }
     }
@@ -91,7 +100,6 @@ function Login(props) {
                     </span>
                 </form>
             </FormContainer>
-            <ToastContainer />
         </>
     );
 

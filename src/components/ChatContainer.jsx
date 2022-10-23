@@ -5,6 +5,8 @@ import { getAllMessagesRoute, sendMessageRoute } from '../utils/APIRoutes';
 import ChatInput from './ChatInput';
 import Logout from './Logout';
 import {v4 as uuidv4} from 'uuid'
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function ChatContainer({currentChat, currentUser, socket}) {
 
@@ -12,30 +14,40 @@ function ChatContainer({currentChat, currentUser, socket}) {
     const [arrivalMessage, setArrivalMessage] = useState(null)
 
     const scrollRef = useRef()
+    const navigate = useNavigate()
 
     useEffect(() => {
         async function fetchApi () {
             if(currentChat) {
-                const response = await axios.post(getAllMessagesRoute, {
-                    from: currentUser._id,
-                    to: currentChat._id
-                })
-                setMessages(response.data)
+                try {
+                    const response = await axios.post(getAllMessagesRoute, {
+                        from: currentUser._id,
+                        to: currentChat._id
+                    }, {withCredentials: true})
+                    setMessages(response.data)
+                } catch (ex) {
+                    navigate("/login")
+                }
             }
         }
         fetchApi()
     }, [currentChat])
 
     const handleSendMsg = async (msg) => {
-        await axios.post(sendMessageRoute, {
-            from: currentUser._id,
-            to: currentChat._id,
-            message: msg
-        })
+        try {
+            await axios.post(sendMessageRoute, {
+                from: currentUser._id,
+                to: currentChat._id,
+                message: msg
+            }, {withCredentials: true})
+        } catch (ex) {
+            navigate("/login")
+        }
         socket.current.emit("send-msg", {
             to: currentChat._id,
             from: currentUser._id,
-            msg: msg
+            msg: msg,
+            token: Cookies.get("accessToken")
         })
         const msgs = [...messages]
         msgs.push({fromSelf: true, message: msg})
@@ -48,7 +60,7 @@ function ChatContainer({currentChat, currentUser, socket}) {
                  setArrivalMessage({fromSelf: false, message: msg})
             })
         }
-    }, [])
+    })
 
     useEffect(() => {
         arrivalMessage && setMessages((prev) => [...prev, arrivalMessage])
@@ -95,7 +107,6 @@ function ChatContainer({currentChat, currentUser, socket}) {
 }
 
 const Container = styled.div`
-    padding-top: 1rem;
     display: grid;
     grid-template-rows: 10% 78% 12%;
     overflow: hidden;
@@ -106,7 +117,8 @@ const Container = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 2rem;
+        padding: 0rem 2rem;
+        background-color: #0d0d30;
         .user-details {
             display: flex;
             align-items: center;
