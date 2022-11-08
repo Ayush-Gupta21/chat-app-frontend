@@ -31,23 +31,25 @@ function Contacts({contacts, currentUser, changeChat}) {
                         <div className="contacts">
                             {
                                 contacts.map((contact, index) => {
-                                    return (
-                                        <div 
-                                            className={`contact ${index === currentSelected ? "selected" : ""}`} 
-                                            key={index}
-                                            onClick={() => changeCurrentChat(index, contact)}
-                                        >
-                                            <div className="avatar">
-                                                <img 
-                                                    src={`data:image/svg+xml;base64,${contact.avatarImage}`} 
-                                                    alt="avatar" 
-                                                />
+                                    if(contact.isAvatarImageSet) {
+                                        return (
+                                            <div 
+                                                className={`contact ${index === currentSelected ? "selected" : ""}`} 
+                                                key={index}
+                                                onClick={() => changeCurrentChat(index, contact)}
+                                            >
+                                                <div className="avatar">
+                                                    <img 
+                                                        src={`data:image/svg+xml;base64,${contact.avatarImage}`} 
+                                                        alt="avatar" 
+                                                    />
+                                                </div>
+                                                <div className="username">
+                                                    <h3>{contact.username}</h3>
+                                                </div>
                                             </div>
-                                            <div className="username">
-                                                <h3>{contact.username}</h3>
-                                            </div>
-                                        </div>
-                                    )
+                                        )
+                                    }
                                 })
                             }
                         </div>
@@ -83,6 +85,7 @@ const Container = styled.div`
         }
         h3 {
             color: white;
+            font-size: 1.5rem;
         }
     }
     .contacts {
@@ -90,11 +93,11 @@ const Container = styled.div`
         flex-direction: column;
         align-items: center;
         overflow: auto;
-        gap: 0.8rem;
+        gap: 0.1rem;
         &::-webkit-scrollbar {
             width: 0.4rem;
             &-thumb {
-                background-color: white;
+                background-color: rgb(0, 0, 0, 0.3);
                 width: 0.1rem;
                 border-radius: 1rem;
             }
@@ -120,9 +123,14 @@ const Container = styled.div`
                     color: black;
                 }
             }
+            &:hover {
+                color: black;
+                background-color: grey;
+                transition: 0.3s ease-in;
+            }
         }
         .selected {
-            background-color: #9186f3;
+            background-color: grey;
         }
     }
     .current-user {

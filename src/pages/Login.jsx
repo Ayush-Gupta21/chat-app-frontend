@@ -15,7 +15,7 @@ function Login(props) {
     });
 
     const navigate = useNavigate()
-
+ 
     const toastOptions = {
         position: "bottom-right",
         autoClose: 5000,
@@ -73,6 +73,23 @@ function Login(props) {
         setValues({...values, [event.target.name]: event.target.value})
     }
 
+    const enterWithoutSignup =  async () => {
+        console.log()
+        const {data} = await axios.post(loginRoute, {
+            username: process.env.REACT_APP_USERNAME,
+            password: process.env.REACT_APP_PASSWORD
+        }, {withCredentials: true})
+        if(data.status === false) {
+            toast.error(data.message, toastOptions)
+            return false
+        }
+        if(data.status === true) {
+            toast.success("Welcome to my Chat App, I hope you will Like it 😄!", toastOptions)
+            navigate("/")
+        }
+        navigate('/')
+    }
+
     return (
         <>
             <FormContainer>
@@ -99,6 +116,10 @@ function Login(props) {
                         Don't have an account? <Link to="/register">Sign Up</Link>
                     </span>
                 </form>
+                <div className="demo">
+                    <button><a target="_blank" href={`${process.env.REACT_APP_YT_DEMO_LINK}`}>Demo on Youtube</a></button>
+                    <button onClick={enterWithoutSignup}>Enter without SignUp!</button>
+                </div>
             </FormContainer>
         </>
     );
@@ -114,6 +135,25 @@ const FormContainer = styled.div`
     gap: 1rem;
     align-items: center;
     background-color: rgb(38, 38, 38);
+    button {
+        background-color: rgb(114, 212, 183);
+        padding: 0.5rem 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        color: black;
+        border-radius: 0.5rem;
+        border: 2px solid black;
+        margin: 0.2rem;
+        &:hover {
+            color: white;
+            background-color: rgb(237, 112, 107);
+            transition: 0.2s ease-in-out;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    }
     .brand {
         display: flex;
         align-items: center;
@@ -155,7 +195,7 @@ const FormContainer = styled.div`
             &:hover {
                 color: black;
                 background-color: rgb(237, 112, 107);
-                transition: 0.5s ease-in-out;
+                transition: 0.3s ease-in-out;
             }
         }
         span {

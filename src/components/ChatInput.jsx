@@ -40,7 +40,7 @@ function ChatInput({handleSendMsg}) {
         <form className='input-container' onSubmit={(e) => sendChat(e)}>
             <input 
                 type="text" 
-                placeholder= "type your message here"
+                placeholder= "Type your message here"
                 value={msg}
                 onChange={(e) => {setMsg(e.target.value)}}
                 onFocus={(e) => {setShowEmojiPicker(false)}}
@@ -56,7 +56,7 @@ const Container = styled.div`
   display: grid;
   align-items: center;
   grid-template-columns: 5% 95%;
-  background-color: #080420;
+  background-color: rgb(240, 242, 245);
   padding: 0 2rem;
   @media screen and (min-width: 720px) and (max-width: 1080px) {
     padding: 0 1rem;
@@ -71,7 +71,7 @@ const Container = styled.div`
       position: relative;
       svg {
         font-size: 1.5rem;
-        color: #ffff00c8;
+        color: grey;
         cursor: pointer;
       }
       .EmojiPickerReact {
@@ -86,11 +86,11 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     gap: 2rem;
-    background-color: #ffffff34;
+    background-color: white;
     input {
       width: 90%;
       background-color: transparent;
-      color: white;
+      color: black;
       border: none;
       padding-left: 1rem;
       font-size: 1.2rem;
@@ -107,7 +107,8 @@ const Container = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #9a86f3;
+      background-color: grey;
+      cursor: pointer;
       border: none;
       @media screen and (min-width: 720px) and (max-width: 1080px) {
         padding: 0.3rem 1rem;
