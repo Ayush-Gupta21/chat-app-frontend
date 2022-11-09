@@ -24,16 +24,16 @@ function Login(props) {
         theme: "dark" 
     }
 
-    useEffect(() => {
-        (
-            async () => {
-                const res = await axios.get(currentUserRoute, {withCredentials: true})
-                if(res.status === 200) {
-                    navigate("/")
-                }
-            }
-        )()
-    }, [])
+    // useEffect(() => {
+    //     (
+    //         async () => {
+    //             const res = await axios.get(currentUserRoute, {withCredentials: true})
+    //             if(res.status === 200) {
+    //                 navigate("/")
+    //             }
+    //         }
+    //     )()
+    // }, [])
 
     const handleSubmit = async (event) => {
         event.preventDefault()
