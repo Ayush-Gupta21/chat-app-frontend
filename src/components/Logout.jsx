@@ -23,7 +23,7 @@ function Logout(props) {
         // const res = await axios.post(logoutRoute, {withCredentials: true})
         Cookies.remove('accessToken')
         Cookies.remove('refreshToken')
-        toast.success(res.data.message, toastOptions)
+        toast.success("Successfully Logged Out!", toastOptions)
         navigate('/login')
     }
 
