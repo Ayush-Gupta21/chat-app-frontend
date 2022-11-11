@@ -1,4 +1,4 @@
- export const host = "https://chatt-app-backend.herokuapp.com"
+ export const host = process.env.REACT_APP_BACKEND_URL
  export const registerRoute = `${host}/api/user/register`
  export const loginRoute = `${host}/api/user/login`
  export const logoutRoute = `${host}/api/user/logout`

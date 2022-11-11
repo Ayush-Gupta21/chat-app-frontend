@@ -19,7 +19,7 @@ function Logout(props) {
     }
 
     const handleClick = async() => {
-        const res = await axios.get(logoutRoute, {withCredentials: true})
+        const res = await axios.get(logoutRoute, {withCredentials: true, credentials: 'same-origin'})
         toast.success(res.data.message, toastOptions)
         navigate('/login')
     }
