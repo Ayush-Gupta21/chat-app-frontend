@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { logoutRoute } from '../utils/APIRoutes';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie'
 
 function Logout(props) {
 
@@ -19,7 +20,9 @@ function Logout(props) {
     }
 
     const handleClick = async() => {
-        const res = await axios.post(logoutRoute, {withCredentials: true})
+        // const res = await axios.post(logoutRoute, {withCredentials: true})
+        Cookies.remove('accessToken')
+        Cookies.remove('refreshToken')
         toast.success(res.data.message, toastOptions)
         navigate('/login')
     }
